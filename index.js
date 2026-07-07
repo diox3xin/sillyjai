@@ -34,7 +34,7 @@
 
 'use strict';
 
-console.log('[JanitorImport] index.js loaded (v1.0.3)');
+console.log('[JanitorImport] index.js loaded (v1.0.4)');
 
 (function () {
     // -------- CONFIG -------------------------------------------------------------
@@ -1481,6 +1481,7 @@ console.log('[JanitorImport] index.js loaded (v1.0.3)');
         const buttons = document.createElement('div');
         buttons.className = 'ji-modal-buttons';
         buttons.appendChild(cancel); buttons.appendChild(go);
+        body.appendChild(buttons);
 
 
         const m = buildModal({ title: '🐰 Janitor Import', body });
@@ -1552,6 +1553,7 @@ console.log('[JanitorImport] index.js loaded (v1.0.3)');
         const buttons = document.createElement('div');
         buttons.className = 'ji-modal-buttons';
         buttons.appendChild(cancel); buttons.appendChild(go);
+        body.appendChild(buttons);
 
 
         const m = buildModal({ title: '🌐 Translate trigger keys', body });
@@ -1615,7 +1617,8 @@ console.log('[JanitorImport] index.js loaded (v1.0.3)');
 
     function createSettingsDrawer() {
         const container = document.getElementById('extensions_settings')
-            || document.getElementById('extensions_settings2');
+            || document.getElementById('extensions_settings2')
+            || document.querySelector('[data-extension-settings], .extensions_settings');
         if (!container) return false;
         if (document.getElementById('ji_settings_root')) return true;
 
@@ -1686,5 +1689,3 @@ console.log('[JanitorImport] index.js loaded (v1.0.3)');
         initUI();
     }, 500);
 })();
-
-
