@@ -1,225 +1,201 @@
-/*
- * Janitor Import — SillyTavern extension styles
- *
- * All UI is stylised here (previously inline-styled in index.js). Colours use
- * SillyTavern theme variables with hard fallbacks so the extension looks native
- * regardless of the active theme, and works even if ST variables are missing.
- */
+/* Card Tools — SillyTavern extension styles */
 
-/* ---- Toast host + toasts (used only when ST toastr is unavailable) -------- */
-#ji-toast-host {
+#ct-toast-host {
     position: fixed;
     right: 20px;
     bottom: 80px;
-    z-index: 99999;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    pointer-events: none;
+    z-index: 100000;
 }
 
-.ji-toast {
+.ct-toast {
     padding: 10px 14px;
     border-radius: 8px;
     background: rgba(20, 20, 20, .92);
     color: #fff;
-    font: 13px/1.4 system-ui, sans-serif;
     box-shadow: 0 4px 16px rgba(0, 0, 0, .35);
-    max-width: 320px;
-    pointer-events: auto;
     transition: opacity .4s ease;
 }
 
-.ji-toast--hide {
+.ct-toast--hide {
     opacity: 0;
 }
 
-/* ---- Modal overlay + card ------------------------------------------------ */
-.ji-overlay {
+.ct-settings-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+.ct-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, .55);
     z-index: 100000;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: rgba(0, 0, 0, .55);
     backdrop-filter: blur(2px);
 }
 
-.ji-modal {
-    background: var(--SmartThemeBlurTintColor, var(--SmartThemeBodyColor, #1a1a1a));
-    color: var(--SmartThemeFontColor, #e6e6e6);
+.ct-modal {
+    width: 560px;
+    max-width: 94vw;
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 18px;
     border: 1px solid var(--SmartThemeBorderColor, #444);
     border-radius: 12px;
-    padding: 20px;
-    width: 520px;
-    max-width: 92vw;
-    max-height: 85vh;
-    overflow-y: auto;
+    background: var(--SmartThemeBlurTintColor, var(--SmartThemeBodyColor, #1a1a1a));
+    color: var(--SmartThemeFontColor, #eee);
     box-shadow: 0 12px 60px rgba(0, 0, 0, .5);
     font: 14px/1.45 var(--mainFontFamily, system-ui, sans-serif);
 }
 
-.ji-modal-head {
-    font-size: 16px;
-    font-weight: 600;
+.ct-modal-head {
     margin-bottom: 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    font-size: 16px;
+    font-weight: 700;
 }
 
-/* ---- Form rows + controls ------------------------------------------------ */
-.ji-row {
+.ct-note {
+    margin: 6px 0 12px;
+    opacity: .85;
+}
+
+.ct-row {
     display: flex;
-    gap: 10px;
     align-items: center;
+    gap: 10px;
     margin: 8px 0;
 }
 
-.ji-row-label {
-    flex: 0 0 auto;
-    min-width: 160px;
+.ct-row-label {
+    min-width: 150px;
     opacity: .9;
 }
 
-.ji-row-control {
+.ct-row-control {
     flex: 1 1 auto;
     min-width: 0;
 }
 
-.ji-input,
-.ji-select {
+.ct-check-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+    cursor: pointer;
+}
+
+.ct-input,
+.ct-select {
     padding: 7px 10px;
-    border-radius: 8px;
     border: 1px solid var(--SmartThemeBorderColor, #555);
+    border-radius: 8px;
     background: var(--SmartThemeBlurTintColor, #2a2a2a);
-    color: var(--SmartThemeFontColor, #e6e6e6);
+    color: var(--SmartThemeFontColor, #eee);
     font: inherit;
-    outline: none;
-    transition: border-color .15s ease, box-shadow .15s ease;
 }
 
-.ji-input:focus,
-.ji-select:focus {
-    border-color: var(--SmartThemeQuoteColor, #6a9);
-    box-shadow: 0 0 0 2px color-mix(in srgb, var(--SmartThemeQuoteColor, #6a9) 30%, transparent);
-}
-
-.ji-input::placeholder {
-    color: color-mix(in srgb, var(--SmartThemeFontColor, #e6e6e6) 45%, transparent);
-}
-
-.ji-checkbox {
+.ct-checkbox {
     width: 16px;
     height: 16px;
-    accent-color: var(--SmartThemeQuoteColor, #6a9);
-    cursor: pointer;
+    accent-color: var(--SmartThemeQuoteColor, #5a8);
 }
 
-/* ---- Buttons ------------------------------------------------------------- */
-.ji-btn {
-    padding: 8px 16px;
+.ct-btn {
+    padding: 8px 14px;
+    border: 1px solid var(--SmartThemeBorderColor, #555);
     border-radius: 8px;
-    cursor: pointer;
-    border: 1px solid transparent;
-    font: inherit;
-    font-weight: 500;
-    transition: filter .15s ease, transform .05s ease, box-shadow .15s ease;
-    color: #fff;
     background: var(--SmartThemeBlurTintColor, #2a2a2a);
-    user-select: none;
+    color: var(--SmartThemeFontColor, #eee);
+    font: inherit;
+    cursor: pointer;
 }
 
-.ji-btn:hover {
+.ct-btn:hover {
     filter: brightness(1.12);
 }
 
-.ji-btn:active {
-    transform: translateY(1px);
-}
-
-.ji-btn:disabled {
+.ct-btn:disabled {
     opacity: .5;
     cursor: not-allowed;
     filter: none;
-    transform: none;
 }
 
-.ji-btn--primary {
+.ct-btn--primary {
+    border-color: transparent;
     background: var(--SmartThemeQuoteColor, #4a8a5a);
     color: #fff;
 }
 
-.ji-btn--secondary {
-    background: var(--SmartThemeBlurTintColor, #2a2a2a);
-    color: var(--SmartThemeFontColor, #e6e6e6);
-    border-color: var(--SmartThemeBorderColor, #555);
-}
-
-.ji-btn--danger {
-    background: var(--SmartThemeBotColor, #c44);
-    color: #fff;
-}
-
-.ji-modal-buttons {
+.ct-modal-buttons {
     display: flex;
-    gap: 10px;
     justify-content: flex-end;
+    gap: 10px;
     margin-top: 16px;
 }
 
-/* ---- Progress area + log ------------------------------------------------- */
-.ji-progress {
-    margin-top: 14px;
-}
-
-.ji-progress-bar {
-    height: 6px;
-    background: var(--SmartThemeBlurTintColor, #333);
-    border-radius: 3px;
-    overflow: hidden;
-}
-
-.ji-progress-fill {
-    height: 100%;
-    width: 0%;
-    background: var(--SmartThemeQuoteColor, #5a8);
-    transition: width .25s ease;
-}
-
-.ji-log {
-    margin-top: 8px;
-    max-height: 160px;
-    overflow-y: auto;
-    background: rgba(0, 0, 0, .25);
-    padding: 8px 10px;
+.ct-log,
+.ct-preview {
+    margin-top: 12px;
+    padding: 9px 10px;
     border-radius: 8px;
-    font: 12px/1.4 var(--monoFontFamily, ui-monospace, Menlo, monospace);
+    background: rgba(0, 0, 0, .25);
+    font: 12px/1.45 var(--monoFontFamily, ui-monospace, Menlo, monospace);
     white-space: pre-wrap;
     word-break: break-word;
 }
 
-.ji-log > div {
-    padding: 1px 0;
+.ct-log {
+    max-height: 180px;
+    overflow-y: auto;
 }
 
-/* ---- Floating action buttons (FAB) -------------------------------------- */
-#ji-fab {
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
-    z-index: 99998;
+.ct-preview-title {
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.ct-preview ul {
+    margin: 6px 0 0 20px;
+    padding: 0;
+}
+
+.ct-warning {
+    color: var(--warning, #e0b44c);
+}
+
+.ct-pairs {
     display: flex;
+    flex-direction: column;
     gap: 8px;
 }
 
-.ji-fab-btn {
-    border-radius: 999px;
-    padding: 10px 16px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, .35);
+.ct-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 8px;
+    align-items: center;
 }
 
-.ji-fab-btn:hover {
-    box-shadow: 0 8px 26px rgba(0, 0, 0, .45);
+@media (max-width: 640px) {
+    .ct-row {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .ct-row-label {
+        min-width: 0;
+    }
+
+    .ct-pair {
+        grid-template-columns: 1fr;
+    }
+
+    .ct-modal-buttons {
+        flex-wrap: wrap;
+    }
 }

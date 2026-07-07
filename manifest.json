@@ -1,12 +1,13 @@
 {
-    "display_name": "Janitor Import",
+    "display_name": "Card Tools",
     "loading_order": 100,
     "requires": [],
     "optional": [],
     "js": "index.js",
     "css": "style.css",
     "author": "diox3xin",
-    "version": "1.0.6",
-    "homePage": "https://github.com/diox3xin/sillyjai1",
-    "auto_update": true
+    "version": "2.0.0",
+    "homePage": "https://github.com/diox3xin/sillyjai",
+    "auto_update": true,
+    "author_notes": "Two tools: translate lorebook trigger keys to any language, and find/replace names in a character card. Uses the LLM already configured in SillyTavern for translation. Works on iOS, Android and desktop."
 }
