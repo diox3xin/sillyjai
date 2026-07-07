@@ -34,7 +34,7 @@
 
 'use strict';
 
-console.log('[JanitorImport] index.js loaded (v1.0.4)');
+console.log('[JanitorImport] index.js loaded (v1.0.5)');
 
 (function () {
     // -------- CONFIG -------------------------------------------------------------
@@ -1652,13 +1652,30 @@ console.log('[JanitorImport] index.js loaded (v1.0.4)');
         if (!document.body) return;
         const host = document.createElement('div');
         host.id = 'ji-fab';
+        host.style.position = 'fixed';
+        host.style.right = '20px';
+        host.style.bottom = '20px';
+        host.style.zIndex = '2147483647';
+        host.style.display = 'flex';
+        host.style.flexDirection = 'column';
+        host.style.gap = '8px';
+        host.style.alignItems = 'flex-end';
+        host.style.pointerEvents = 'auto';
 
         const importFab = button('🐰 Janitor Import', 'primary');
         importFab.classList.add('ji-fab-btn');
+        importFab.style.borderRadius = '999px';
+        importFab.style.padding = '10px 16px';
+        importFab.style.boxShadow = '0 6px 20px rgba(0,0,0,.35)';
+        importFab.style.fontWeight = '600';
         importFab.onclick = function () { buildMainModal(); };
 
         const translateFab = button('🌐 Translate keys', 'secondary');
         translateFab.classList.add('ji-fab-btn');
+        translateFab.style.borderRadius = '999px';
+        translateFab.style.padding = '10px 16px';
+        translateFab.style.boxShadow = '0 6px 20px rgba(0,0,0,.35)';
+        translateFab.style.fontWeight = '600';
         translateFab.onclick = function () { buildTranslateModal(); };
 
         host.appendChild(importFab);
@@ -1678,6 +1695,7 @@ console.log('[JanitorImport] index.js loaded (v1.0.4)');
     }
 
     onReady(initUI);
+    initUI();
     // #extensions_settings can mount a bit after APP_READY; keep trying briefly.
     let jiTries = 0;
     const jiPoll = setInterval(function () {
