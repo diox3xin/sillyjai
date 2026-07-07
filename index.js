@@ -62,22 +62,25 @@
             done = true;
             setTimeout(cb, 0);
         };
-        // SillyTavern loads extension modules AFTER the page is ready, so
-        // DOMContentLoaded has usually already fired. Run immediately in that case.
+        // Preferred: use SillyTavern's own APP_READY event (this is how native
+        // extensions boot). The #extensions_settings container only exists after this.
+        try {
+            const ctx = window.SillyTavern && window.SillyTavern.getContext && window.SillyTavern.getContext();
+            if (ctx && ctx.eventSource && ctx.event_types && ctx.event_types.APP_READY) {
+                ctx.eventSource.on(ctx.event_types.APP_READY, trigger);
+            }
+        } catch (_) { }
+        // Fallbacks: run now if DOM is already up, plus retry on a timer in case
+        // #extensions_settings mounts a little later.
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', trigger, { once: true });
+            document.addEventListener('DOMContentLoaded', () => setTimeout(trigger, 500), { once: true });
         } else {
-            trigger();
+            setTimeout(trigger, 500);
         }
-        // Belt-and-suspenders: fire on APP_READY if available, and retry on a timer
-        // in case document.body isn't mounted yet at module-eval time.
-        if (typeof window.eventOn === 'function') {
-            try { window.eventOn('APP_READY', trigger); } catch (_) { }
-        }
-        setTimeout(trigger, 200);
-        setTimeout(trigger, 1000);
-        setTimeout(trigger, 3000);
+        setTimeout(trigger, 1500);
+        setTimeout(trigger, 4000);
     }
+
 
 
     // -------- UI HELPERS ---------------------------------------------------------
@@ -1602,8 +1605,45 @@
     }
 
     // -------- INSTALL UI --------------------------------------------------------
+    //
+    // SillyTavern extensions render their controls into #extensions_settings as a
+    // collapsible "inline-drawer". That's the panel the user actually sees. We
+    // add that here (primary UI) and ALSO drop floating buttons as a shortcut.
 
-    function installButton() {
+    function createSettingsDrawer() {
+        const container = document.getElementById('extensions_settings')
+            || document.getElementById('extensions_settings2');
+        if (!container) return false;
+        if (document.getElementById('ji_settings_root')) return true;
+
+        const html =
+            '<div class="ji-settings" id="ji_settings_root">' +
+            '  <div class="inline-drawer">' +
+            '    <div class="inline-drawer-toggle inline-drawer-header">' +
+            '      <b>🐰 Janitor Import</b>' +
+            '      <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>' +
+            '    </div>' +
+            '    <div class="inline-drawer-content">' +
+            '      <p style="opacity:.85;margin:4px 0 10px;">Импорт персонажей и лорбуков с JanitorAI (в т.ч. закрытых) + перевод триггер-ключей.</p>' +
+            '      <div class="ji-modal-buttons" style="justify-content:flex-start;">' +
+            '        <button type="button" class="ji-btn ji-btn--primary" id="ji_open_import">🐰 Import from JanitorAI</button>' +
+            '        <button type="button" class="ji-btn ji-btn--secondary" id="ji_open_translate">🌐 Translate keys</button>' +
+            '      </div>' +
+            '    </div>' +
+            '  </div>' +
+            '</div>';
+        container.insertAdjacentHTML('beforeend', html);
+
+        const bImport = document.getElementById('ji_open_import');
+        const bTranslate = document.getElementById('ji_open_translate');
+        if (bImport) bImport.addEventListener('click', function () { buildMainModal(); });
+        if (bTranslate) bTranslate.addEventListener('click', function () { buildTranslateModal(); });
+        return true;
+    }
+
+    function installFab() {
+        if (document.getElementById('ji-fab')) return;
+        if (!document.body) return;
         const host = document.createElement('div');
         host.id = 'ji-fab';
 
@@ -1615,15 +1655,33 @@
         translateFab.classList.add('ji-fab-btn');
         translateFab.onclick = function () { buildTranslateModal(); };
 
-
         host.appendChild(importFab);
         host.appendChild(translateFab);
         document.body.appendChild(host);
     }
 
-    onReady(function () {
-        if (document.getElementById('ji-fab')) return;
-        installButton();
-        toast('Janitor Import loaded.', 'info', 2500);
-    });
+    let jiInitDone = false;
+    function initUI() {
+        // Drawer is the primary, discoverable UI (Extensions panel). FAB is a bonus.
+        const drawerOk = createSettingsDrawer();
+        installFab();
+        if (drawerOk && !jiInitDone) {
+            jiInitDone = true;
+            toast('Janitor Import loaded.', 'info', 2500);
+        }
+    }
+
+    onReady(initUI);
+    // #extensions_settings can mount a bit after APP_READY; keep trying briefly.
+    let jiTries = 0;
+    const jiPoll = setInterval(function () {
+        jiTries++;
+        if (document.getElementById('ji_settings_root') || jiTries > 40) {
+            clearInterval(jiPoll);
+            return;
+        }
+        initUI();
+    }, 500);
 })();
+
+
