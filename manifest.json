@@ -1,0 +1,10 @@
+{
+  "display_name": "Janitor Import",
+  "version": "1.0.0",
+  "description": "Import characters and lorebooks from JanitorAI (public + closed/hidden), with optional trigger-key translation.",
+  "author": "you",
+  "home_page": "",
+  "js": "index.js",
+  "css": "",
+  "author_notes": "Uses the LLM endpoint already configured inside SillyTavern (same key & model you roleplay with). Needs an active JanitorAI session in the same Chrome profile — open janitorai.com in any tab and log in once. A throwaway JanitorAI account is recommended."
+}
