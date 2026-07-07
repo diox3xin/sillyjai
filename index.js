@@ -34,10 +34,13 @@
 
 'use strict';
 
+console.log('[JanitorImport] index.js loaded (v1.0.3)');
+
 (function () {
     // -------- CONFIG -------------------------------------------------------------
 
     const JANITOR_ORIGIN = 'https://janitorai.com';
+
 
     // Best-effort selectors. JanitorAI rebrands often, keep these loose.
     const INPUT_SELECTORS = [

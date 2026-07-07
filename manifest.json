@@ -6,7 +6,8 @@
     "js": "index.js",
     "css": "style.css",
     "author": "diox3xin",
-    "version": "1.0.2",
+    "version": "1.0.3",
+
     "homePage": "https://github.com/diox3xin/sillyjai",
     "auto_update": true,
     "author_notes": "Uses the LLM endpoint already configured inside SillyTavern (same key & model you roleplay with). Needs an active JanitorAI session in the same Chrome profile — open janitorai.com in any tab and log in once. A throwaway JanitorAI account is recommended."
