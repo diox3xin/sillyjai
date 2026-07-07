@@ -34,7 +34,7 @@
 
 'use strict';
 
-console.log('[JanitorImport] index.js loaded (v1.0.5)');
+console.log('[JanitorImport] index.js loaded (v1.0.6)');
 
 (function () {
     // -------- CONFIG -------------------------------------------------------------
@@ -1611,14 +1611,11 @@ console.log('[JanitorImport] index.js loaded (v1.0.5)');
 
     // -------- INSTALL UI --------------------------------------------------------
     //
-    // SillyTavern extensions render their controls into #extensions_settings as a
-    // collapsible "inline-drawer". That's the panel the user actually sees. We
-    // add that here (primary UI) and ALSO drop floating buttons as a shortcut.
+    // Render into SillyTavern's native Extensions panel, matching the working
+    // pattern used by haruspics and other third-party extensions.
 
-    function createSettingsDrawer() {
-        const container = document.getElementById('extensions_settings')
-            || document.getElementById('extensions_settings2')
-            || document.querySelector('[data-extension-settings], .extensions_settings');
+    function createSettingsUI() {
+        const container = document.getElementById('extensions_settings');
         if (!container) return false;
         if (document.getElementById('ji_settings_root')) return true;
 
@@ -1631,9 +1628,9 @@ console.log('[JanitorImport] index.js loaded (v1.0.5)');
             '    </div>' +
             '    <div class="inline-drawer-content">' +
             '      <p style="opacity:.85;margin:4px 0 10px;">Импорт персонажей и лорбуков с JanitorAI (в т.ч. закрытых) + перевод триггер-ключей.</p>' +
-            '      <div class="ji-modal-buttons" style="justify-content:flex-start;">' +
-            '        <button type="button" class="ji-btn ji-btn--primary" id="ji_open_import">🐰 Import from JanitorAI</button>' +
-            '        <button type="button" class="ji-btn ji-btn--secondary" id="ji_open_translate">🌐 Translate keys</button>' +
+            '      <div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0;">' +
+            '        <div class="menu_button" id="ji_open_import"><i class="fa-solid fa-file-import"></i> Import from JanitorAI</div>' +
+            '        <div class="menu_button" id="ji_open_translate"><i class="fa-solid fa-language"></i> Translate keys</div>' +
             '      </div>' +
             '    </div>' +
             '  </div>' +
@@ -1685,25 +1682,33 @@ console.log('[JanitorImport] index.js loaded (v1.0.5)');
 
     let jiInitDone = false;
     function initUI() {
-        // Drawer is the primary, discoverable UI (Extensions panel). FAB is a bonus.
-        const drawerOk = createSettingsDrawer();
-        installFab();
+        const drawerOk = createSettingsUI();
         if (drawerOk && !jiInitDone) {
             jiInitDone = true;
             toast('Janitor Import loaded.', 'info', 2500);
         }
     }
 
-    onReady(initUI);
-    initUI();
-    // #extensions_settings can mount a bit after APP_READY; keep trying briefly.
-    let jiTries = 0;
-    const jiPoll = setInterval(function () {
-        jiTries++;
-        if (document.getElementById('ji_settings_root') || jiTries > 40) {
-            clearInterval(jiPoll);
-            return;
+    (function init() {
+        let context = null;
+        try { context = SillyTavern.getContext(); }
+        catch (e) { console.error('[JanitorImport] SillyTavern context is not available', e); }
+
+        if (context && context.eventSource && context.event_types) {
+            context.eventSource.on(context.event_types.APP_READY, function () {
+                initUI();
+                console.log('[JanitorImport] Janitor Import initialized');
+            });
         }
-        initUI();
-    }, 500);
+
+        let jiTries = 0;
+        const jiPoll = setInterval(function () {
+            jiTries++;
+            if (document.getElementById('ji_settings_root') || jiTries > 40) {
+                clearInterval(jiPoll);
+                return;
+            }
+            initUI();
+        }, 500);
+    })();
 })();
