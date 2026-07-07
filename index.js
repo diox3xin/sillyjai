@@ -80,46 +80,30 @@
         if (!host) {
             host = document.createElement('div');
             host.id = 'ji-toast-host';
-            Object.assign(host.style, {
-                position: 'fixed', right: '20px', bottom: '80px',
-                zIndex: 99999, display: 'flex', flexDirection: 'column', gap: '8px',
-            });
             document.body.appendChild(host);
         }
         const node = document.createElement('div');
+        node.className = 'ji-toast';
         node.textContent = text;
-        Object.assign(node.style, {
-            padding: '10px 14px', borderRadius: '8px', background: 'rgba(20,20,20,.92)',
-            color: '#fff', font: '13px/1.4 system-ui, sans-serif',
-            boxShadow: '0 4px 16px rgba(0,0,0,.35)', maxWidth: '320px',
-        });
         host.appendChild(node);
-        setTimeout(() => { node.style.opacity = '0'; node.style.transition = 'opacity .4s'; }, Math.max(0, ms - 400));
+        setTimeout(() => { node.classList.add('ji-toast--hide'); }, Math.max(0, ms - 400));
         setTimeout(() => node.remove(), ms);
     }
+
 
     function buildModal(opts) {
         const title = opts && opts.title;
         const body = opts && opts.body;
-        const width = (opts && opts.width) || '520px';
+        const width = (opts && opts.width) || '';
         const overlay = document.createElement('div');
-        Object.assign(overlay.style, {
-            position: 'fixed', inset: '0', background: 'rgba(0,0,0,.55)',
-            zIndex: 100000, display: 'flex', alignItems: 'center', justifyContent: 'center',
-        });
+        overlay.className = 'ji-overlay';
         overlay.id = 'ji-modal-overlay';
         const card = document.createElement('div');
-        Object.assign(card.style, {
-            background: 'var(--SmartThemeBodyColor, #1a1a1a)',
-            color: 'var(--SmartThemeFontColor, #e6e6e6)',
-            border: '1px solid var(--SmartThemeBorderColor, #444)',
-            borderRadius: '10px', padding: '20px', width: width, maxWidth: '92vw',
-            maxHeight: '85vh', overflowY: 'auto',
-            boxShadow: '0 12px 60px rgba(0,0,0,.5)', font: '14px/1.45 system-ui, sans-serif',
-        });
+        card.className = 'ji-modal';
+        if (width) card.style.width = width;
         const head = document.createElement('div');
+        head.className = 'ji-modal-head';
         head.textContent = title;
-        Object.assign(head.style, { fontSize: '16px', fontWeight: '600', marginBottom: '12px' });
         card.appendChild(head);
         if (body) card.appendChild(body);
         overlay.appendChild(card);
@@ -131,42 +115,34 @@
     function row(labelText, control, opts) {
         opts = opts || {};
         const r = document.createElement('label');
-        Object.assign(r.style, { display: 'flex', gap: '10px', alignItems: 'center', margin: '8px 0' });
+        r.className = 'ji-row';
         const lbl = document.createElement('span');
+        lbl.className = 'ji-row-label';
         lbl.textContent = labelText;
-        Object.assign(lbl.style, { minWidth: opts.labelWidth || '160px', flex: '0 0 auto' });
+        if (opts.labelWidth) lbl.style.minWidth = opts.labelWidth;
         r.appendChild(lbl);
+        if (control instanceof HTMLElement) control.classList.add('ji-row-control');
         r.appendChild(control);
-        if (control instanceof HTMLElement) Object.assign(control.style, { flex: '1 1 auto', minWidth: 0 });
         return r;
     }
 
     function checkbox(checked) {
         const cb = document.createElement('input');
         cb.type = 'checkbox';
+        cb.className = 'ji-checkbox';
         cb.checked = !!checked;
         return cb;
     }
     function textInput(value) {
         const i = document.createElement('input');
         i.type = 'text';
+        i.className = 'ji-input';
         i.value = value || '';
-        Object.assign(i.style, {
-            padding: '6px 8px', borderRadius: '6px',
-            border: '1px solid var(--SmartThemeBorderColor, #555)',
-            background: 'var(--SmartThemeBlurTintColor, #2a2a2a)',
-            color: 'var(--SmartThemeFontColor, #e6e6e6)',
-        });
         return i;
     }
     function select(options, selected) {
         const s = document.createElement('select');
-        Object.assign(s.style, {
-            padding: '6px 8px', borderRadius: '6px',
-            border: '1px solid var(--SmartThemeBorderColor, #555)',
-            background: 'var(--SmartThemeBlurTintColor, #2a2a2a)',
-            color: 'var(--SmartThemeFontColor, #e6e6e6)',
-        });
+        s.className = 'ji-select';
         for (let i = 0; i < options.length; i++) {
             const o = document.createElement('option');
             o.value = options[i][0];
@@ -180,34 +156,20 @@
         const b = document.createElement('button');
         b.type = 'button';
         b.textContent = label;
-        Object.assign(b.style, {
-            padding: '8px 14px', borderRadius: '6px', cursor: 'pointer',
-            border: '1px solid transparent', fontWeight: '500',
-            background: kind === 'primary' ? 'var(--SmartThemeButtonColor, #4a4)' :
-                        kind === 'danger' ? 'var(--SmartThemeBotColor, #c44)' :
-                        'var(--SmartThemeBlurTintColor, #2a2a2a)',
-            color: kind === 'secondary' ? 'var(--SmartThemeFontColor, #e6e6e6)' : '#fff',
-        });
+        b.className = 'ji-btn ji-btn--' + (kind || 'secondary');
         return b;
     }
 
     function progressArea() {
         const wrap = document.createElement('div');
-        Object.assign(wrap.style, { marginTop: '14px' });
+        wrap.className = 'ji-progress';
         const bar = document.createElement('div');
-        Object.assign(bar.style, {
-            height: '6px', background: 'var(--SmartThemeBlurTintColor, #333)',
-            borderRadius: '3px', overflow: 'hidden',
-        });
+        bar.className = 'ji-progress-bar';
         const fill = document.createElement('div');
-        Object.assign(fill.style, { height: '100%', width: '0%', background: '#5a8', transition: 'width .25s' });
+        fill.className = 'ji-progress-fill';
         bar.appendChild(fill);
         const log = document.createElement('div');
-        Object.assign(log.style, {
-            marginTop: '8px', maxHeight: '160px', overflowY: 'auto',
-            background: 'rgba(0,0,0,.25)', padding: '8px 10px', borderRadius: '6px',
-            font: '12px/1.4 ui-monospace, Menlo, monospace',
-        });
+        log.className = 'ji-log';
         wrap.appendChild(bar);
         wrap.appendChild(log);
         wrap.setProgress = function (frac) { fill.style.width = (Math.min(100, Math.max(0, frac * 100)) | 0) + '%'; };
@@ -219,6 +181,7 @@
         };
         return wrap;
     }
+
 
     // -------- BRIDGE SOURCE -----------------------------------------------------
     //
@@ -1493,8 +1456,9 @@
         const cancel = button('Cancel', 'secondary');
         const go = button('Extract →', 'primary');
         const buttons = document.createElement('div');
-        Object.assign(buttons.style, { display: 'flex', gap: '10px', justifyContent: 'flex-end', marginTop: '14px' });
+        buttons.className = 'ji-modal-buttons';
         buttons.appendChild(cancel); buttons.appendChild(go);
+
 
         const m = buildModal({ title: '🐰 Janitor Import', body });
         cancel.onclick = function () { m.overlay.remove(); };
@@ -1563,8 +1527,9 @@
         const cancel = button('Cancel', 'secondary');
         const go = button('Translate →', 'primary');
         const buttons = document.createElement('div');
-        Object.assign(buttons.style, { display: 'flex', gap: '10px', justifyContent: 'flex-end', marginTop: '14px' });
+        buttons.className = 'ji-modal-buttons';
         buttons.appendChild(cancel); buttons.appendChild(go);
+
 
         const m = buildModal({ title: '🌐 Translate trigger keys', body });
         cancel.onclick = function () { m.overlay.remove(); };
@@ -1624,18 +1589,15 @@
     function installButton() {
         const host = document.createElement('div');
         host.id = 'ji-fab';
-        Object.assign(host.style, {
-            position: 'fixed', right: '20px', bottom: '20px',
-            zIndex: 99998, display: 'flex', gap: '8px',
-        });
 
         const importFab = button('🐰 Janitor Import', 'primary');
-        Object.assign(importFab.style, { borderRadius: '999px', padding: '10px 16px', boxShadow: '0 6px 20px rgba(0,0,0,.35)' });
+        importFab.classList.add('ji-fab-btn');
         importFab.onclick = function () { buildMainModal(); };
 
         const translateFab = button('🌐 Translate keys', 'secondary');
-        Object.assign(translateFab.style, { borderRadius: '999px', padding: '10px 16px', boxShadow: '0 6px 20px rgba(0,0,0,.35)' });
+        translateFab.classList.add('ji-fab-btn');
         translateFab.onclick = function () { buildTranslateModal(); };
+
 
         host.appendChild(importFab);
         host.appendChild(translateFab);
