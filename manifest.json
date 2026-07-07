@@ -1,6 +1,7 @@
 {
   "display_name": "Janitor Import",
-  "version": "1.0.0",
+  "version": "1.0.1",
+
   "description": "Import characters and lorebooks from JanitorAI (public + closed/hidden), with optional trigger-key translation.",
   "author": "you",
   "home_page": "https://github.com/diox3xin/sillyjai",

@@ -56,12 +56,29 @@
     // -------- ENTRY POINT --------------------------------------------------------
 
     function onReady(cb) {
-        const trigger = () => setTimeout(cb, 0);
-        document.addEventListener('DOMContentLoaded', trigger);
+        let done = false;
+        const trigger = () => {
+            if (done) return;
+            done = true;
+            setTimeout(cb, 0);
+        };
+        // SillyTavern loads extension modules AFTER the page is ready, so
+        // DOMContentLoaded has usually already fired. Run immediately in that case.
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', trigger, { once: true });
+        } else {
+            trigger();
+        }
+        // Belt-and-suspenders: fire on APP_READY if available, and retry on a timer
+        // in case document.body isn't mounted yet at module-eval time.
         if (typeof window.eventOn === 'function') {
             try { window.eventOn('APP_READY', trigger); } catch (_) { }
         }
+        setTimeout(trigger, 200);
+        setTimeout(trigger, 1000);
+        setTimeout(trigger, 3000);
     }
+
 
     // -------- UI HELPERS ---------------------------------------------------------
 
